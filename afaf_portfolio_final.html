@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: #f5f7fa; color: #1a2744; }
+
+  nav { display: flex; justify-content: space-between; align-items: center; padding: 1rem 2.5rem; background: #fff; border-bottom: 0.5px solid #dde3f0; position: sticky; top: 0; z-index: 10; }
+  .nav-logo { font-size: 16px; font-weight: 700; color: #1a2744; }
+  .nav-logo span { color: #2d52a0; }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { font-size: 13px; color: #5a6a8a; text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: #2d52a0; }
+  .nav-links a.cta { color: #2d52a0; font-weight: 500; }
+
+  .hero { background: #1a2744; padding: 5rem 2.5rem 4.5rem; }
+  .hero-inner { max-width: 860px; margin: 0 auto; }
+  .hero-eyebrow { font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: #7b9dd4; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 10px; }
+  .hero-eyebrow::before { content: ''; width: 28px; height: 1px; background: #7b9dd4; display: inline-block; }
+  .hero h1 { font-size: clamp(2.2rem, 5vw, 3.4rem); font-weight: 700; line-height: 1.12; letter-spacing: -0.03em; color: #fff; margin-bottom: 1.25rem; }
+  .hero h1 span { color: #7b9dd4; }
+  .hero-desc { font-size: 16px; line-height: 1.75; color: rgba(255,255,255,0.6); max-width: 520px; margin-bottom: 2.25rem; }
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn-primary { padding: 11px 24px; background: #2d52a0; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; text-decoration: none; transition: background 0.2s, transform 0.15s; display: inline-flex; align-items: center; gap: 6px; }
+  .btn-primary:hover { background: #3a63b8; transform: translateY(-1px); }
+  .btn-outline { padding: 11px 24px; background: transparent; color: rgba(255,255,255,0.75); border: 0.5px solid rgba(255,255,255,0.25); border-radius: 8px; font-size: 14px; cursor: pointer; text-decoration: none; transition: all 0.2s; }
+  .btn-outline:hover { border-color: #7b9dd4; color: #fff; }
+
+  .stats { display: flex; background: #fff; border-bottom: 0.5px solid #dde3f0; }
+  .stat { flex: 1; padding: 1.5rem 1rem; border-right: 0.5px solid #dde3f0; text-align: center; }
+  .stat:last-child { border-right: none; }
+  .stat-icon { font-size: 20px; margin-bottom: 6px; }
+  .stat-num { font-size: 18px; font-weight: 700; color: #1a2744; line-height: 1.2; }
+  .stat-label { font-size: 12px; color: #8a9ab8; margin-top: 3px; }
+
+  section { max-width: 860px; margin: 0 auto; padding: 3rem 2.5rem; }
+  .section-header { display: flex; align-items: center; gap: 14px; margin-bottom: 2rem; }
+  .section-tag { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #2d52a0; font-weight: 600; white-space: nowrap; }
+  .section-line { flex: 1; height: 0.5px; background: #dde3f0; }
+
+  .projects-grid { display: flex; flex-direction: column; gap: 1px; background: #dde3f0; border: 0.5px solid #dde3f0; border-radius: 12px; overflow: hidden; }
+  .project-card { background: #fff; padding: 1.75rem; transition: background 0.2s; }
+  .project-card:hover { background: #f8f9fc; }
+  .project-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 0.85rem; }
+  .project-type { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #2d52a0; font-weight: 600; }
+  .project-dot { width: 3px; height: 3px; border-radius: 50%; background: #c8d3e8; }
+  .project-year { font-size: 11px; color: #aab4cc; }
+  .project-title { font-size: 17px; font-weight: 600; color: #1a2744; margin-bottom: 0.5rem; }
+  .project-desc { font-size: 14px; line-height: 1.65; color: #6a7a9a; margin-bottom: 1.1rem; }
+  .tech-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag { font-size: 11px; padding: 3px 10px; background: #eef1f8; color: #2d52a0; border: 0.5px solid #c8d3e8; border-radius: 20px; }
+  .project-link { font-size: 13px; color: #2d52a0; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; margin-top: 1rem; opacity: 0.75; transition: opacity 0.2s; }
+  .project-link:hover { opacity: 1; }
+
+  .toggle-add { display: flex; align-items: center; gap: 8px; padding: 10px 18px; background: transparent; border: 0.5px solid #2d52a0; color: #2d52a0; border-radius: 8px; font-size: 13px; cursor: pointer; transition: all 0.2s; margin-top: 1.25rem; }
+  .toggle-add:hover { background: #2d52a0; color: #fff; }
+
+  .add-panel { background: #fff; border: 0.5px solid #dde3f0; border-radius: 12px; padding: 2rem; margin-top: 1rem; display: none; }
+  .add-panel.open { display: block; }
+  .add-panel h3 { font-size: 15px; font-weight: 600; color: #1a2744; margin-bottom: 0.4rem; }
+  .add-panel > p { font-size: 13px; color: #7a8aaa; margin-bottom: 1.5rem; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group.full { grid-column: 1 / -1; }
+  label { font-size: 12px; color: #5a6a8a; }
+  input[type=text], input[type=email], textarea, select { padding: 9px 12px; background: #f5f7fa; border: 0.5px solid #dde3f0; border-radius: 7px; font-size: 13px; color: #1a2744; font-family: inherit; outline: none; width: 100%; transition: border-color 0.2s; }
+  input[type=text]:focus, input[type=email]:focus, textarea:focus, select:focus { border-color: #2d52a0; background: #fff; }
+  textarea { resize: vertical; min-height: 70px; }
+  .form-actions { display: flex; gap: 10px; margin-top: 16px; }
+  .btn-add { padding: 9px 20px; background: #1a2744; color: #fff; border: none; border-radius: 7px; font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+  .btn-add:hover { background: #2d52a0; }
+  .btn-cancel { padding: 9px 20px; background: transparent; color: #5a6a8a; border: 0.5px solid #dde3f0; border-radius: 7px; font-size: 13px; cursor: pointer; }
+  .success-msg-light { background: #eef5ee; border: 0.5px solid #b3d4b3; color: #2d6a2d; font-size: 13px; padding: 10px 14px; border-radius: 7px; margin-top: 12px; display: none; }
+
+  .skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #dde3f0; border: 0.5px solid #dde3f0; border-radius: 12px; overflow: hidden; }
+  .skill-group { background: #fff; padding: 1.5rem; }
+  .skill-group-title { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #8a9ab8; margin-bottom: 1rem; font-weight: 600; }
+  .skill-list { display: flex; flex-direction: column; gap: 10px; }
+  .skill-item { display: flex; align-items: center; justify-content: space-between; }
+  .skill-name { font-size: 14px; color: #2a3a60; }
+  .skill-bar-bg { width: 60px; height: 2px; background: #dde3f0; border-radius: 2px; overflow: hidden; }
+  .skill-bar { height: 100%; background: #2d52a0; border-radius: 2px; }
+
+  .contact-box { background: #1a2744; border-radius: 12px; padding: 2.5rem; }
+  .contact-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; flex-wrap: wrap; margin-bottom: 2rem; }
+  .contact-box h2 { font-size: 22px; font-weight: 600; color: #fff; margin-bottom: 0.3rem; }
+  .contact-box > .contact-top > div > p { font-size: 14px; color: rgba(255,255,255,0.5); }
+  .contact-links { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .contact-btn { padding: 9px 18px; background: transparent; color: rgba(255,255,255,0.75); border: 0.5px solid rgba(255,255,255,0.25); border-radius: 8px; font-size: 13px; text-decoration: none; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+  .contact-btn:hover { border-color: #7b9dd4; color: #fff; background: rgba(255,255,255,0.05); }
+  .contact-form { border-top: 0.5px solid rgba(255,255,255,0.1); padding-top: 2rem; }
+  .contact-form .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .contact-form .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .contact-form .form-group.full { grid-column: 1 / -1; }
+  .contact-form label { font-size: 12px; color: rgba(255,255,255,0.45); }
+  .contact-form input, .contact-form textarea { padding: 10px 14px; background: rgba(255,255,255,0.06); border: 0.5px solid rgba(255,255,255,0.12); border-radius: 8px; font-size: 14px; color: #fff; font-family: inherit; outline: none; width: 100%; transition: border-color 0.2s; }
+  .contact-form input::placeholder, .contact-form textarea::placeholder { color: rgba(255,255,255,0.25); }
+  .contact-form input:focus, .contact-form textarea:focus { border-color: #7b9dd4; background: rgba(255,255,255,0.09); }
+  .contact-form textarea { resize: vertical; min-height: 100px; }
+  .btn-send { margin-top: 6px; padding: 11px 28px; background: #2d52a0; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.2s, transform 0.15s; }
+  .btn-send:hover { background: #3a63b8; transform: translateY(-1px); }
+  .success-msg-dark { background: rgba(45,106,45,0.25); border: 0.5px solid rgba(100,200,100,0.3); color: #a0d8a0; font-size: 13px; padding: 10px 14px; border-radius: 7px; margin-top: 12px; display: none; }
+
+  footer { text-align: center; padding: 2rem; font-size: 12px; color: #aab4cc; background: #fff; border-top: 0.5px solid #dde3f0; }
+</style>
+
+<nav>
+  <span class="nav-logo">Afaf <span>Ait Khouya</span></span>
+  <ul class="nav-links">
+    <li><a href="#">Projets</a></li>
+    <li><a href="#">Compétences</a></li>
+    <li><a href="#">Contact</a></li>
+    <li><a href="mailto:afafaitkhouya95@gmail.com" class="cta">CV ↓</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Étudiante en Développement Digital</div>
+    <h1>Afaf Ait Khouya —<br>Je construis des apps <span>utiles</span>.</h1>
+    <p class="hero-desc">Passionnée par le développement web et mobile, je crée des solutions avec Django, Python et React.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">Voir mes projets ↓</a>
+      <a href="mailto:afafaitkhouya95@gmail.com" class="btn-outline">Me contacter</a>
+    </div>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat">
+    <div class="stat-icon">🚀</div>
+    <div class="stat-num">3</div>
+    <div class="stat-label">Projets réalisés</div>
+  </div>
+  <div class="stat">
+    <div class="stat-icon">💻</div>
+    <div class="stat-num">Web & Mobile</div>
+    <div class="stat-label">Développement</div>
+  </div>
+  <div class="stat">
+    <div class="stat-icon">🐍</div>
+    <div class="stat-num">Django & Python</div>
+    <div class="stat-label">Stack principale</div>
+  </div>
+  <div class="stat">
+    <div class="stat-icon">🎓</div>
+    <div class="stat-num">Dev Digital</div>
+    <div class="stat-label">Formation en cours</div>
+  </div>
+</div>
+
+<section>
+  <div class="section-header">
+    <span class="section-tag">Projets réalisés</span>
+    <div class="section-line"></div>
+  </div>
+  <div class="projects-grid" id="projectsGrid">
+    <div class="project-card">
+      <div class="project-meta"><span class="project-type">Full-stack</span><span class="project-dot"></span><span class="project-year">2024</span></div>
+      <div class="project-title">E-commerce Platform</div>
+      <div class="project-desc">Une marketplace avec gestion des stocks, intégration de paiement et tableau de bord admin.</div>
+      <div class="tech-tags"><span class="tag">Django</span><span class="tag">Python</span><span class="tag">PostgreSQL</span><span class="tag">Bootstrap</span></div>
+      <a href="https://github.com/afafaitkhouya" target="_blank" class="project-link">GitHub →</a>
+    </div>
+    <div class="project-card">
+      <div class="project-meta"><span class="project-type">Mobile</span><span class="project-dot"></span><span class="project-year">2024</span></div>
+      <div class="project-title">Application mobile</div>
+      <div class="project-desc">Application cross-platform avec authentification et synchronisation des données.</div>
+      <div class="tech-tags"><span class="tag">React Native</span><span class="tag">Firebase</span></div>
+      <a href="https://github.com/afafaitkhouya" target="_blank" class="project-link">GitHub →</a>
+    </div>
+    <div class="project-card">
+      <div class="project-meta"><span class="project-type">Frontend</span><span class="project-dot"></span><span class="project-year">2023</span></div>
+      <div class="project-title">Dashboard analytique</div>
+      <div class="project-desc">Interface de visualisation de données avec graphiques interactifs et export.</div>
+      <div class="tech-tags"><span class="tag">React</span><span class="tag">Chart.js</span><span class="tag">Django REST</span></div>
+      <a href="https://github.com/afafaitkhouya" target="_blank" class="project-link">GitHub →</a>
+    </div>
+  </div>
+
+  <button class="toggle-add" id="toggleBtn" onclick="toggleForm()">+ Ajouter un projet</button>
+
+  <div class="add-panel" id="addPanel">
+    <h3>Ajouter un nouveau projet</h3>
+    <p>Remplis les infos — il apparaîtra directement dans la liste.</p>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Titre *</label>
+        <input type="text" id="projTitle" placeholder="Mon projet" />
+      </div>
+      <div class="form-group">
+        <label>Type</label>
+        <select id="projType">
+          <option>Full-stack</option>
+          <option>Frontend</option>
+          <option>Backend</option>
+          <option>Mobile</option>
+          <option>DevOps</option>
+          <option>Autre</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Année</label>
+        <input type="text" id="projYear" value="2024" />
+      </div>
+      <div class="form-group">
+        <label>Lien (GitHub / Live)</label>
+        <input type="text" id="projLink" placeholder="https://..." />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group full">
+        <label>Description *</label>
+        <textarea id="projDesc" placeholder="Ce que tu as construit et pourquoi..."></textarea>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group full">
+        <label>Technologies (séparées par des virgules)</label>
+        <input type="text" id="projTech" placeholder="Django, Python, React" />
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn-add" onclick="addProject()">Ajouter au portfolio</button>
+      <button class="btn-cancel" onclick="toggleForm()">Annuler</button>
+    </div>
+    <div class="success-msg-light" id="addSuccessMsg">✓ Projet ajouté avec succès !</div>
+  </div>
+</section>
+
+<section>
+  <div class="section-header">
+    <span class="section-tag">Compétences</span>
+    <div class="section-line"></div>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-group">
+      <div class="skill-group-title">Frontend</div>
+      <div class="skill-list">
+        <div class="skill-item"><span class="skill-name">React</span><div class="skill-bar-bg"><div class="skill-bar" style="width:75%"></div></div></div>
+        <div class="skill-item"><span class="skill-name">HTML / CSS</span><div class="skill-bar-bg"><div class="skill-bar" style="width:85%"></div></div></div>
+        <div class="skill-item"><span class="skill-name">Bootstrap</span><div class="skill-bar-bg"><div class="skill-bar" style="width:80%"></div></div></div>
+      </div>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-title">Backend</div>
+      <div class="skill-list">
+        <div class="skill-item"><span class="skill-name">Django</span><div class="skill-bar-bg"><div class="skill-bar" style="width:85%"></div></div></div>
+        <div class="skill-item"><span class="skill-name">Python</span><div class="skill-bar-bg"><div class="skill-bar" style="width:85%"></div></div></div>
+        <div class="skill-item"><span class="skill-name">PostgreSQL</span><div class="skill-bar-bg"><div class="skill-bar" style="width:70%"></div></div></div>
+      </div>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-title">Mobile & Outils</div>
+      <div class="skill-list">
+        <div class="skill-item"><span class="skill-name">React Native</span><div class="skill-bar-bg"><div class="skill-bar" style="width:65%"></div></div></div>
+        <div class="skill-item"><span class="skill-name">Git / GitHub</span><div class="skill-bar-bg"><div class="skill-bar" style="width:80%"></div></div></div>
+        <div class="skill-item"><span class="skill-name">Firebase</span><div class="skill-bar-bg"><div class="skill-bar" style="width:60%"></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-header">
+    <span class="section-tag">Contact</span>
+    <div class="section-line"></div>
+  </div>
+  <div class="contact-box">
+    <div class="contact-top">
+      <div>
+        <h2>Travaillons ensemble.</h2>
+        <p>Ouverte aux stages, projets et collaborations.</p>
+      </div>
+      <div class="contact-links">
+        <a href="mailto:afafaitkhouya95@gmail.com" class="contact-btn">✉ Email</a>
+        <a href="https://github.com/afafaitkhouya" target="_blank" class="contact-btn">GitHub</a>
+      </div>
+    </div>
+    <div class="contact-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nom</label>
+          <input type="text" id="contactName" placeholder="Votre nom" />
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="contactEmail" placeholder="votre@email.com" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group full">
+          <label>Message</label>
+          <textarea id="contactMsg" placeholder="Bonjour Afaf, je voudrais..."></textarea>
+        </div>
+      </div>
+      <button class="btn-send" onclick="sendMessage()">Envoyer le message</button>
+      <div class="success-msg-dark" id="contactSuccessMsg">✓ Message envoyé ! Je vous répondrai bientôt.</div>
+    </div>
+  </div>
+</section>
+
+<footer>Afaf Ait Khouya · 2024 · <a href="mailto:afafaitkhouya95@gmail.com" style="color:#8a9ab8;text-decoration:none;">afafaitkhouya95@gmail.com</a></footer>
+
+<script>
+  function toggleForm() {
+    const panel = document.getElementById('addPanel');
+    const btn = document.getElementById('toggleBtn');
+    const isOpen = panel.classList.contains('open');
+    panel.classList.toggle('open');
+    btn.textContent = isOpen ? '+ Ajouter un projet' : '✕ Fermer';
+    document.getElementById('addSuccessMsg').style.display = 'none';
+  }
+
+  function addProject() {
+    const title = document.getElementById('projTitle').value.trim();
+    const desc = document.getElementById('projDesc').value.trim();
+    if (!title || !desc) { alert('Merci de remplir le titre et la description.'); return; }
+    const type = document.getElementById('projType').value;
+    const year = document.getElementById('projYear').value || '2024';
+    const link = document.getElementById('projLink').value.trim();
+    const techRaw = document.getElementById('projTech').value.trim();
+    const tags = techRaw ? techRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
+    const grid = document.getElementById('projectsGrid');
+    const card = document.createElement('div');
+    card.className = 'project-card';
+    card.innerHTML = `
+      <div class="project-meta">
+        <span class="project-type">${type}</span>
+        <span class="project-dot"></span>
+        <span class="project-year">${year}</span>
+      </div>
+      <div class="project-title">${title}</div>
+      <div class="project-desc">${desc}</div>
+      <div class="tech-tags">${tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+      ${link ? `<a href="${link}" class="project-link" target="_blank">Voir le projet →</a>` : ''}
+    `;
+    grid.appendChild(card);
+    document.getElementById('projTitle').value = '';
+    document.getElementById('projDesc').value = '';
+    document.getElementById('projTech').value = '';
+    document.getElementById('projLink').value = '';
+    document.getElementById('projYear').value = '2024';
+    const msg = document.getElementById('addSuccessMsg');
+    msg.style.display = 'block';
+    setTimeout(() => { msg.style.display = 'none'; }, 3000);
+  }
+
+  function sendMessage() {
+    const name = document.getElementById('contactName').value.trim();
+    const email = document.getElementById('contactEmail').value.trim();
+    const msg = document.getElementById('contactMsg').value.trim();
+    if (!name || !email || !msg) { alert('Merci de remplir tous les champs.'); return; }
+    const mailto = `mailto:afafaitkhouya95@gmail.com?subject=Contact portfolio - ${encodeURIComponent(name)}&body=${encodeURIComponent(msg + '\n\nDe: ' + name + ' (' + email + ')')}`;
+    window.open(mailto);
+    document.getElementById('contactName').value = '';
+    document.getElementById('contactEmail').value = '';
+    document.getElementById('contactMsg').value = '';
+    const s = document.getElementById('contactSuccessMsg');
+    s.style.display = 'block';
+    setTimeout(() => { s.style.display = 'none'; }, 4000);
+  }
+</script>
+</html>
